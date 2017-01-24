@@ -75,7 +75,7 @@ def dhcp_server(config_file, log_level):
     channel = DBChannelListener(config['database'], 'dhcp_control')
     loop.run_until_complete(channel.start())
     logger.info('Init dhcp server...')
-    server = DHCPServer(db_engine, channel, config.get('dhcp', 'default_server_addr'))
+    server = DHCPServer(db_engine, channel, config.get('dhcp', 'default_server_addr', fallback=None))
 
     loop.run_until_complete(server.db_load_owners())
 
