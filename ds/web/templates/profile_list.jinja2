@@ -1,0 +1,35 @@
+{% extends "base_layout.jinja2" %}
+{% block title %}Profile List{% endblock %}
+{% block content %}
+    <h1>{{ self.title() }}</h1>
+    <p><a href="new">Создать</a></p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Действие</th>
+                <th>Название</th>
+                <th>Relay IP</th>
+                <th>Router IP</th>
+                <th>Период аренды</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in items %}
+        <tr>
+            <td>
+                <a href="{{ i.id }}/edit">Изменить</a>
+                <a href="{{ i.id }}/delete"
+                   onclick="return confirm('Точно удалить {{ i.name }}?');">Удалить</a>
+            </td>
+            <td>{{ i.name }}</td>
+            <td>{{ i.relay_ip }}</td>
+            <td>{{ i.router_ip }}</td>
+            <td>{{ i.lease_time }}</td>
+            <td>{{ i.description }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -196,7 +196,7 @@ class DHCPServer(AsyncServer):
                 self.db_task_add_staging(request.chaddr, relay_ip)
                 return None
         elif request.chaddr in self.maps_staging:
-            self.logger.debug('%s is awaiting resolution, ignore request')
+            self.logger.debug('%s is awaiting resolution, ignore request', request.chaddr)
             return None
         else:
             self.db_task_add_staging(request.chaddr, relay_ip)
@@ -243,17 +243,18 @@ class DHCPServer(AsyncServer):
                 if task is DBTask.SHUTDOWN:
                     break
                 elif task is DBTask.ADD_STAGING:
-                    date, macaddr, relay_ip = params
+                    date, mac_addr, relay_ip = params
                     try:
                         res = await (await conn.execute(
                             db.owner.insert().from_select(
                                 ['mac_addr', 'profile_id'],
-                                sa.select([sa.literal(macaddr), db.profile.c.id]).
+                                sa.select([sa.literal(mac_addr), db.profile.c.id]).
                                     select_from(db.profile).
                                     where(db.profile.c.relay_ip == str(relay_ip))
                             ).returning(db.owner.c.id)
                         )).fetchone()
                         if not res:
+                            del  self.maps_staging[mac_addr]
                             self.logger.warning('no profile for relay %s', relay_ip)
                     except psycopg2.IntegrityError:
                         pass

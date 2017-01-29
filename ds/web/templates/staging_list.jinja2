@@ -1,0 +1,32 @@
+{% extends "base_layout.jinja2" %}
+{% block title %}Staging List{% endblock %}
+{% block content %}
+    <h1>{{ self.title() }}</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Действие</th>
+                <th>Профиль</th>
+                <th>Relay IP</th>
+                <th>MAC</th>
+                <th>Дата первого запроса</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for i in items %}
+        <tr>
+            <td>
+                <a href="{{ i.id }}/assign-ip">Назначить IP</a>
+                <a href="{{ i.id }}/delete"
+                   onclick="return confirm('Точно удалить {{ i.mac_addr }}?');">Удалить</a>
+            </td>
+            <td>{{ i.profile_name }}</td>
+            <td>{{ i.relay_ip }}</td>
+            <td>{{ i.mac_addr }}</td>
+            <td>{{ i.create_date }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

@@ -15,6 +15,7 @@ import aiopg.sa
 
 from . import db
 from .dhcp.server import DHCPServer, DBChannelListener
+from .web.server import WebServer
 
 
 def config_load(config_file):
@@ -95,6 +96,45 @@ def dhcp_server(config_file, log_level):
     finally:
         loop.run_until_complete(server.stop())
         loop.run_until_complete(channel.stop())
+        logger.info('Awaiting remaining tasks...')
+        pending = asyncio.Task.all_tasks()
+        loop.run_until_complete(asyncio.gather(*pending))
+        loop.close()
+        logger.info('Bye!')
+
+
+@click.command()
+@click.option('-c', '--config', 'config_file', required=True, type=click.Path(exists=True, dir_okay=False))
+@click.option('-l', '--log-level', 'log_level')
+def web_server(config_file, log_level):
+    config = config_load(config_file)
+    config_logging(config, log_level)
+    logger = logging.getLogger(__name__)
+
+    loop = asyncio.get_event_loop()
+    try:
+        loop.add_signal_handler(signal.SIGTERM, loop.stop)
+    except NotImplementedError:
+        # signals are not available on Windows
+        pass
+
+    logger.info('Init db connection...')
+    db_engine = loop.run_until_complete(config_db(config))
+    logger.info('Init web server...')
+    ws = WebServer(config, db_engine, loop=loop)
+    loop.run_until_complete(ws.start())
+
+    logger.info('Starting main loop...')
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        logger.info('Stopping webserver...')
+        loop.run_until_complete(ws.stop())
+        logger.info('Closing db connections...')
+        db_engine.close()
+        loop.run_until_complete(db_engine.wait_closed())
         logger.info('Awaiting remaining tasks...')
         pending = asyncio.Task.all_tasks()
         loop.run_until_complete(asyncio.gather(*pending))

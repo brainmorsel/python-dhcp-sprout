@@ -1,0 +1,18 @@
+{% extends "base_layout.jinja2" %}
+{% from 'forms.jinja2' import form_field %}
+{% block title %}Profile Edit{% endblock %}
+{% block content %}
+    <h1>{{ self.title() }}</h1>
+    <form method="POST" class="narrow-form">
+        {{ form_field(form.name) }}
+        {{ form_field(form.description) }}
+        {{ form_field(form.relay_ip) }}
+        {{ form_field(form.router_ip) }}
+        {{ form_field(form.network_addr) }}
+        {{ form_field(form.lease_time) }}
+        {{ form_field(form.dns_ips) }}
+        {{ form_field(form.ntp_ips) }}
+        <button>Сохранить</button>
+        <button type="reset">Reset</button>
+    </form>
+{% endblock %}

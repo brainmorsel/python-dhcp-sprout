@@ -1,0 +1,90 @@
+body {
+    background-color: #eeeeee;
+    color: #111122;
+    font-family: Ubuntu, sans-serif;
+    font-size: 12pt;
+}
+input, select, button, textarea {
+    font-family: monospace;
+    font-size: 1em;
+    border: 1px solid #111122;
+    background-color: #ffffff;
+    color: #111122;
+    border-radius: 0.3em;
+    padding: 0.3em;
+    overflow: hidden;
+}
+button {
+    font-family: Ubuntu, sans-serif;
+    background-color: #dddddd;
+}
+
+a {
+    color: #316ac6;
+}
+
+
+.table tr.highlight.orange {
+    background-color: #ffc49b;
+}
+.table tr:nth-child(odd).highlight.orange {
+    background-color: #ffae75;
+}
+.table tr.highlight.red {
+    background-color: #ffcccc;
+}
+.table tr:nth-child(odd).highlight.red {
+    background-color: #ffaaaa;
+}
+.table tr:nth-child(odd):not(.highlight) {
+    background-color: #dddddd;
+}
+.table tbody > tr:hover, button:hover {
+    background-color: #b7d2ff !important;
+}
+
+form.narrow-form {
+    max-width: 600px;
+}
+.narrow-form label {
+    display: flex;
+    margin-bottom: 5px;
+}
+.narrow-form label > * {
+    flex: 1;
+}
+
+.narrow-form label > span {
+    flex: 0.5;
+}
+
+
+.employee-avatar {
+    height: 500px;
+    width: 500px;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+.employee-avatar > img {
+    max-height: 500px;
+    max-width: 500px;
+    margin: auto;
+}
+
+.employee-avatar::after {
+    content: "Нет Фото";
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    background-color: #b7d2ff;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 500px;
+    font-size: 2em;
+    z-index: -9999;
+}

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} - DHCP Server</title>
+    <link rel="stylesheet" href="/main.css">
+</head>
+<body>
+    <navigation>
+        <a href="/">Home</a> |
+        <a href="/profile/">Profiles</a> |
+        <a href="/staging/">Staging</a> |
+        <a href="/assigned/">Assigned</a>
+    </navigation>
+    <main id="content">{% block content %}{% endblock %}</main>
+</body>
+</html>
