@@ -11,10 +11,16 @@ setup(
         'aiopg',
         'psycopg2',
         'sqlalchemy',
+        'aiohttp',
+        'aiohttp-jinja2',
+        'aiohttp-session',
+        'cryptography',
+        'wtforms',
     ],
     entry_points='''
         [console_scripts]
         ds-dhcp-server=ds.cli:dhcp_server
+        ds-web-server=ds.cli:web_server
         ds-cli=ds.cli:cli
     ''',
     )
