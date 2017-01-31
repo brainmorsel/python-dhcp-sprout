@@ -1,0 +1,14 @@
+[Unit]
+Description=DHCP Sprout Server
+Require=postgresql-9.5.service
+
+[Service]
+User=root
+Group=root
+Type=simple
+ExecStart=/opt/ds/venv/bin/ds-dhcp-server -c /opt/ds/config.ini
+RestartSec=1
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
