@@ -11,6 +11,7 @@
                 <th>Relay IP</th>
                 <th>Router IP</th>
                 <th>Период аренды</th>
+                <th>Занято / свободно</th>
                 <th>Описание</th>
             </tr>
         </thead>
@@ -26,6 +27,7 @@
             <td>{{ i.relay_ip }}</td>
             <td>{{ i.router_ip }}</td>
             <td>{{ i.lease_time }}</td>
+            <td>{{ i.ips_used }} / {{ i.ips_total - i.ips_used }}</td>
             <td>{{ i.description }}</td>
         </tr>
         {% endfor %}

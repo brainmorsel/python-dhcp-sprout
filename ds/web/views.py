@@ -19,9 +19,15 @@ async def index(request):
 async def profile_list(request):
     async with request.app.db.acquire() as conn:
         items = await (await conn.execute(
-            sa.select([db.profile]).
+            sa.select([
+                db.profile, 'ips_used',
+                (sa.func.broadcast(db.profile.c.network_addr) - db.profile.c.network_addr - 2).label('ips_total')
+            ]).
             select_from(
-                db.profile
+                db.profile.
+                join(sa.select([
+                    db.owner.c.profile_id, sa.func.count(db.owner.c.id).label('ips_used')
+                ]).group_by(db.owner.c.profile_id).alias('cnts'))
             ).
             order_by(db.profile.c.name)
         )).fetchall()
