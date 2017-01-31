@@ -87,6 +87,8 @@ class AsyncServer:
         try:
             pkt = Packet.unpack_from(data)
 
+            self.logger.debug('REQUEST PACKET:\n%s', pkt)
+
             if pkt.op == Packet.Op.REQUEST:
                 reply_pkt = await self.handle_request(pkt, address, listener)
             elif pkt.op == Packet.Op.REPLY:
@@ -98,7 +100,7 @@ class AsyncServer:
                 reply_pkt.op = Packet.Op.REPLY
                 reply_pkt.flags = 0
                 data = reply_pkt.pack()
-                pkt = Packet.unpack_from(data)
+                self.logger.debug('REPLY PACKET:\n%s', reply_pkt)
                 await listener.send(address, data)
         except Exception:
             self.logger.exception('an error occured when handling input packet from %s (%s)', listener.interface, address)
