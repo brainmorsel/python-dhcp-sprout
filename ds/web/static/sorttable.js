@@ -169,6 +169,9 @@ sorttable = {
     for (var i=0; i<table.tBodies[0].rows.length; i++) {
       text = sorttable.getInnerText(table.tBodies[0].rows[i].cells[column]);
       if (text != '') {
+        if (text.match(/^([0-9]+\.){3}[0-9]+$/)) {
+          return sorttable.sort_ip;
+        }
         if (text.match(/^-?[£$¤]?[\d,.]+%?$/)) {
           return sorttable.sort_numeric;
         }
@@ -299,6 +302,20 @@ sorttable = {
     if (dt1==dt2) return 0;
     if (dt1<dt2) return -1;
     return 1;
+  },
+  sort_ip: function(a,b) {
+    a = a[0].split('.');
+    b = b[0].split('.');
+    for (var i=0; i < a.length; i++) {
+      var intA = Number(a[i]);
+      var intB = Number(b[i]);
+      if (intA < intB) {
+        return -1;
+      } else if (intA > intB) {
+        return 1;
+      }
+    }
+    return 0;
   },
 
   shaker_sort: function(list, comp_func) {
