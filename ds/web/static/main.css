@@ -42,6 +42,13 @@ a {
 .table tbody > tr:hover, button:hover {
     background-color: #b7d2ff !important;
 }
+.table th {
+    height: 32px;
+    cursor: pointer;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #bbbbbb !important;
+}
 
 form.narrow-form {
     max-width: 600px;
@@ -56,35 +63,4 @@ form.narrow-form {
 
 .narrow-form label > span {
     flex: 0.5;
-}
-
-
-.employee-avatar {
-    height: 500px;
-    width: 500px;
-    position: relative;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-}
-.employee-avatar > img {
-    max-height: 500px;
-    max-width: 500px;
-    margin: auto;
-}
-
-.employee-avatar::after {
-    content: "Нет Фото";
-    display: block;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background-color: #b7d2ff;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 500px;
-    font-size: 2em;
-    z-index: -9999;
 }
