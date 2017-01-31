@@ -153,4 +153,6 @@ class Packet:
         pkt.chaddr = self.chaddr
         pkt.siaddr = ipaddress.IPv4Address(server_addr or '0.0.0.0')
         pkt.yiaddr = ipaddress.IPv4Address(offered_addr)
+        pkt.giaddr = ipaddress.IPv4Address(self.giaddr)
+        pkt.hops = self.hops
         return pkt

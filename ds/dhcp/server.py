@@ -218,6 +218,12 @@ class DHCPServer(AsyncServer):
         pkt.add_option(OptionType.IPaddressLeaseTime, lease_time)
         if server_addr:
             pkt.add_option(OptionType.ServerIdentifier, server_addr)
+
+        for option in request._options:
+            if option.type not in (
+                    OptionType.DHCPMessageType, OptionType.RequestedIPaddress,
+                    OptionType.ParameterRequestList, OptionType.Pad):
+                pkt._options.append(option)
         return pkt
 
     def db_task_add_staging(self, macaddr, relay_ip):
