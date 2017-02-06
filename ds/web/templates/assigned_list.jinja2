@@ -13,6 +13,7 @@
                 <th>MAC</th>
                 <th>Дата первого запроса</th>
                 <th>Дата последнего запроса</th>
+                <th>Описание</th>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +22,7 @@
             <td>
                 <a href="{{ i.id }}/delete"
                    onclick="return confirm('Точно удалить {{ i.mac_addr }}?');">Удалить</a>
+                <a href="{{ i.id }}/edit">Изменить</a>
             </td>
             <td>{{ i.id }}</td>
             <td>{{ i.profile_name }}</td>
@@ -29,6 +31,7 @@
             <td>{{ i.mac_addr }}</td>
             <td>{{ i.create_date }}</td>
             <td>{{ i.lease_date }}</td>
+            <td>{{ i.description }}</td>
         </tr>
         {% endfor %}
         </tbody>

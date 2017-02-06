@@ -12,3 +12,4 @@ def configure(add):
     add('GET',  '/staging/{id}/delete', views.staging_delete)
     add('GET',  '/assigned/', views.assigned_list)
     add('GET',  '/assigned/{id}/delete', views.assigned_delete)
+    add('*',    '/assigned/{id}/edit', views.assigned_edit)

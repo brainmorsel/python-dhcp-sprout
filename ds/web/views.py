@@ -125,6 +125,9 @@ async def staging_assign_ip(request):
             await conn.execute(
                 sa.select([sa.func.pg_notify('dhcp_control', 'RELOAD_ITEM {}'.format(item_id))])
             )
+
+        if 'edit' in request.rel_url.query:
+            return web.HTTPFound('/assigned/{}/edit?redirect=/staging/'.format(item_id))
         return web.HTTPFound('/staging/')
 
 
@@ -161,6 +164,36 @@ async def assigned_list(request):
             order_by(sa.desc(db.owner.c.lease_date))
         )).fetchall()
         return {'items': items}
+
+
+@template('assigned_edit.jinja2')
+async def assigned_edit(request):
+    item_id = request.match_info.get('id')
+    await request.post()
+    async with request.app.db.acquire() as conn:
+        item = await (await conn.execute(
+            sa.select([
+                db.owner,
+                db.profile.c.name.label('profile_name'),
+                db.profile.c.relay_ip,
+            ]).
+            select_from(
+                db.owner.
+                join(db.profile)
+            ).
+            where(db.owner.c.id == item_id)
+        )).fetchone()
+        form = forms.AssignedItemEditForm(request.POST, item)
+        if request.method == 'POST' and form.validate():
+            params = db.fit_params_dict(form.data, db.owner.c.keys())
+            await conn.execute(
+                db.owner.update().values(params).where(db.owner.c.id == item_id)
+            )
+            if 'redirect' in request.rel_url.query:
+                return web.HTTPFound(request.rel_url.query['redirect'])
+            return web.HTTPFound('/assigned/')
+
+        return {'item': item, 'form': form}
 
 
 async def assigned_delete(request):

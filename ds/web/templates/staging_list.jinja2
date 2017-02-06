@@ -17,6 +17,7 @@
         <tr>
             <td>
                 <a href="{{ i.id }}/assign-ip">Назначить IP</a>
+                (<a href="{{ i.id }}/assign-ip?edit">+изменить</a>)
                 <a href="{{ i.id }}/delete"
                    onclick="return confirm('Точно удалить {{ i.mac_addr }}?');">Удалить</a>
             </td>

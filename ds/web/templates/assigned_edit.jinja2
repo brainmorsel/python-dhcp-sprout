@@ -1,0 +1,14 @@
+{% extends "base_layout.jinja2" %}
+{% from 'forms.jinja2' import form_field %}
+{% block title %}Item Edit{% endblock %}
+{% block content %}
+    <h1>{{ self.title() }}</h1>
+    <form method="POST" class="narrow-form">
+        <label><span>Профиль:</span> <div>{{ item.profile_name }}</div></label>
+        <label><span>IP:</span> <div>{{ item.ip_addr }}</div></label>
+        <label><span>MAC:</span> <div>{{ item.mac_addr }}</div></label>
+        {{ form_field(form.description) }}
+        <button>Сохранить</button>
+        <button type="reset">Reset</button>
+    </form>
+{% endblock %}

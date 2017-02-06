@@ -51,3 +51,7 @@ class ProfileEditForm(Form):
     lease_time = StringField('Длительность аренды')
     dns_ips = TextAreaField('DNS IPs', [validate_ip_list], filters=[filter_ip_list])
     ntp_ips = TextAreaField('NTP IPs', [validate_ip_list], filters=[filter_ip_list])
+
+
+class AssignedItemEditForm(Form):
+    description = TextAreaField('Описание')
