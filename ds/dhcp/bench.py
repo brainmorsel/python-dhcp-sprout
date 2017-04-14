@@ -22,6 +22,8 @@ def sync_worker(address, on_success, on_fail, oneshot=False, macaddr=None, relay
         pkt.hops = 1
         pkt.giaddr = relay_ip
 
+    pkt.add_option(OptionType.AgentInformation, b'\x01\x04test')
+
     while True:
         data = pkt.pack()
         sent = sock.sendto(data, address)

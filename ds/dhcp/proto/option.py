@@ -1,12 +1,13 @@
-from enum import IntEnum
 from collections import defaultdict
 
 from . import dec
 from . import enc
 from .opttypes import OptionType
+from .opttypes import AgentInformationOptionType
 
 
 class Option:
+    TYPE_ENUM = OptionType
     DECODERS = defaultdict(lambda: dec.default, {
         OptionType.Pad: dec.pad,
         OptionType.End: dec.pad,
@@ -25,6 +26,7 @@ class Option:
         OptionType.HostName: enc.string,
         OptionType.NTPServer: enc.ip_address_list,
     })
+
     def __init__(self, type, value=None, _byte_size=0):
         self.type = type
         self.value = value
@@ -37,7 +39,7 @@ class Option:
     def unpack_from(cls, buffer, offset=0):
         type_code = buffer[offset]
         try:
-            type_code = OptionType(type_code)
+            type_code = cls.TYPE_ENUM(type_code)
         except ValueError:
             pass
         decoder = cls.DECODERS[type_code]
@@ -48,3 +50,9 @@ class Option:
         encoder = self.ENCODERS[self.type]
         bytes_size = encoder(buffer, offset, self.type, self.value)
         return bytes_size
+
+
+class AgentInformationSubOption(Option):
+    TYPE_ENUM = AgentInformationOptionType
+    DECODERS = defaultdict(lambda: dec.default)
+    ENCODERS = defaultdict(lambda: enc.default)

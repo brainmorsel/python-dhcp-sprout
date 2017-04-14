@@ -5,7 +5,9 @@ from enum import IntEnum
 from ..util import mac_to_string
 from ..util import mac_to_bytes
 from .option import Option
+from .option import AgentInformationSubOption
 from .opttypes import OptionType
+from .opttypes import AgentInformationOptionType
 from .dhcpmsg import MessageType
 
 
@@ -78,6 +80,20 @@ class Packet:
 
     def reset_options(self):
         self._options = []
+
+    def get_circuit_id(self):
+        opt_value = b''
+        for o in self._options:
+            if o.type == OptionType.AgentInformation:
+                opt_value = o.value
+                break
+
+        offset = 0
+        while offset < len(opt_value):
+            sub_opt = AgentInformationSubOption.unpack_from(opt_value, offset)
+            if sub_opt.type == AgentInformationOptionType.CircuitID:
+                return sub_opt.value
+        return None
 
     @classmethod
     def unpack_from(cls, buffer, offset=0):

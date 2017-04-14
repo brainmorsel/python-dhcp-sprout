@@ -81,7 +81,7 @@ owner = sa.Table(
     sa.Column('profile_id', sa.Integer, sa.ForeignKey('profile.id', ondelete='CASCADE'),
               nullable=False),
     sa.Column('ip_addr', pg.INET, nullable=True),
-    sa.Column('mac_addr', pg.MACADDR, nullable=False, index=True),
+    sa.Column('mac_addr', pg.MACADDR, nullable=True, index=True),
     sa.Column('description', sa.String, nullable=False, server_default=''),
     sa.UniqueConstraint('profile_id', 'ip_addr'),
     sa.UniqueConstraint('profile_id', 'mac_addr'),

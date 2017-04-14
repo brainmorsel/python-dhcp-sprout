@@ -87,3 +87,9 @@ class OptionType(IntEnum):
     BootfileName = 67
     # Other:
     ClientFQDN = 81  # RFC 4702
+    AgentInformation = 82
+
+
+class AgentInformationOptionType(IntEnum):
+    CircuitID = 1
+    RemoteID = 2

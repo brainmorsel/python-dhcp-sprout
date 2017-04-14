@@ -154,6 +154,7 @@ class DHCPServer(AsyncServer):
     ]).select_from(
         db.owner.join(db.profile)
     )
+
     def __init__(self, db, channel, default_server_addr=None, loop=None):
         super().__init__(loop)
         self.default_server_addr = default_server_addr
@@ -191,17 +192,18 @@ class DHCPServer(AsyncServer):
 
         relay_ip = request.giaddr or ipaddress.IPv4Address(address)
         self.logger.info('%s %s from relay: %s', request.chaddr, request.message_type.name, relay_ip)
-        
+        circuit_id = (request.get_circuit_id() or b'').decode('utf-8')
+
         if request.chaddr in self.maps:
             profile = self.maps[request.chaddr]
             if profile['relay_ip'] != relay_ip and request.chaddr not in self.maps_staging:
-                self.db_task_add_staging(request.chaddr, relay_ip)
+                self.db_task_add_staging(request.chaddr, relay_ip, circuit_id)
                 return None
         elif request.chaddr in self.maps_staging:
             self.logger.debug('%s is awaiting resolution, ignore request', request.chaddr)
             return None
         else:
-            self.db_task_add_staging(request.chaddr, relay_ip)
+            self.db_task_add_staging(request.chaddr, relay_ip, circuit_id)
             return None
 
         server_addr = listener.server_addr or self.default_server_addr
@@ -228,9 +230,9 @@ class DHCPServer(AsyncServer):
                 pkt._options.append(option)
         return pkt
 
-    def db_task_add_staging(self, macaddr, relay_ip):
+    def db_task_add_staging(self, macaddr, relay_ip, circuit_id):
         try:
-            task = DBTask.ADD_STAGING, (datetime.now(), macaddr, relay_ip)
+            task = DBTask.ADD_STAGING, (datetime.now(), macaddr, relay_ip, circuit_id)
             self.db_tasks.put_nowait(task)
             self.maps_staging[macaddr] = relay_ip
         except asyncio.QueueFull:
@@ -251,18 +253,22 @@ class DHCPServer(AsyncServer):
                 if task is DBTask.SHUTDOWN:
                     break
                 elif task is DBTask.ADD_STAGING:
-                    date, mac_addr, relay_ip = params
+                    date, mac_addr, relay_ip, circuit_id = params
                     try:
                         res = await (await conn.execute(
                             db.owner.insert().from_select(
-                                ['mac_addr', 'profile_id'],
-                                sa.select([sa.literal(mac_addr), db.profile.c.id]).
-                                    select_from(db.profile).
-                                    where(db.profile.c.relay_ip == str(relay_ip))
+                                ['mac_addr', 'profile_id', 'description'],
+                                sa.select([
+                                    sa.literal(mac_addr),
+                                    db.profile.c.id,
+                                    sa.literal(circuit_id),
+                                ]).
+                                select_from(db.profile).
+                                where(db.profile.c.relay_ip == str(relay_ip))
                             ).returning(db.owner.c.id)
                         )).fetchone()
                         if not res:
-                            del  self.maps_staging[mac_addr]
+                            del self.maps_staging[mac_addr]
                             self.logger.warning('no profile for relay %s', relay_ip)
                     except psycopg2.IntegrityError:
                         pass
@@ -272,8 +278,8 @@ class DHCPServer(AsyncServer):
                     if item:
                         await conn.execute(
                             db.owner.update().
-                                values(lease_date=date).
-                                where(db.owner.c.id == item['id'])
+                            values(lease_date=date).
+                            where(db.owner.c.id == item['id'])
                         )
                 elif task is DBTask.REMOVE_ACTIVE:
                     mac_addr, = params
