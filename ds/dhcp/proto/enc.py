@@ -54,4 +54,6 @@ def ip_address_list(buffer, offset, type_code, value):
 
 
 def string(buffer, offset, type_code, value:str):
-    return default(buffer, offset, type_code, value.encode('utf-8'))
+    if isinstance(value, str):
+        value = value.encode('utf-8')
+    return default(buffer, offset, type_code, value)

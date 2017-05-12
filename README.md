@@ -15,6 +15,6 @@
 
 # Extra Links
 
-https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol
-http://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xml
-https://tools.ietf.org/html/rfc2132
+ * https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol
+ * http://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xml
+ * https://tools.ietf.org/html/rfc2132
