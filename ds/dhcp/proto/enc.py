@@ -28,6 +28,8 @@ def uint8(buffer, offset, type_code, value):
 
 
 def uint32(buffer, offset, type_code, value):
+    if isinstance(value, bytes):
+        return default(buffer, offset, type_code, value)
     bytes_size = 6
     buffer[offset] = type_code
     buffer[offset + 1] = 4
@@ -36,6 +38,8 @@ def uint32(buffer, offset, type_code, value):
 
 
 def ip_address(buffer, offset, type_code, value):
+    if isinstance(value, bytes):
+        return default(buffer, offset, type_code, value)
     bytes_size = 6
     buffer[offset] = type_code
     buffer[offset + 1] = 4
