@@ -48,7 +48,7 @@ async def profile_edit(request):
             item = await (await conn.execute(
                 tbl.select().where(tbl.c.id == item_id)
             )).fetchone()
-            form = forms.ProfileEditForm(request.POST, item)
+            form = forms.ProfileEditForm(await request.post(), item)
             if request.method == 'POST' and form.validate():
                 params = db.fit_params_dict(form.data, tbl.c.keys())
                 print(params['dns_ips'])
@@ -183,7 +183,7 @@ async def assigned_edit(request):
             ).
             where(db.owner.c.id == item_id)
         )).fetchone()
-        form = forms.AssignedItemEditForm(request.POST, item)
+        form = forms.AssignedItemEditForm(await request.post(), item)
         if request.method == 'POST' and form.validate():
             params = db.fit_params_dict(form.data, db.owner.c.keys())
             await conn.execute(
